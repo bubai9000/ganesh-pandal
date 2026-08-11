@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bappa | Virtual Pandal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --gold: #e8d5b5;
+            --muted: #9a968f;
+            --dark: #050505;
+        }
+
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            color: var(--gold);
+            overflow: hidden;
+            font-family: 'Space Mono', monospace;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Film grain */
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.13;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+        }
+
+        /* Watercolour background */
+        .bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: 
+                radial-gradient(ellipse 90% 80% at 50% 38%, transparent 15%, rgba(5,5,5,0.6) 70%, #050505 100%),
+                url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Lalbaugcha_Raja.jpg/960px-Lalbaugcha_Raja.jpg');
+            background-size: cover;
+            background-position: center 22%;
+            opacity: 0.2;
+            filter: contrast(1.15) saturate(0.85) sepia(0.18) brightness(0.9);
+            transition: opacity 2.5s ease, filter 2.8s ease;
+            animation: breath 18s ease-in-out infinite alternate;
+        }
+
+        .texture {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.1;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="w"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="5"/%3E%3CfeColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.4 0"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23w)"/%3E%3C/svg%3E');
+            mix-blend-mode: soft-light;
+        }
+
+        .wash {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: radial-gradient(ellipse 70% 55% at 50% 32%, rgba(200,120,40,0.1) 0%, transparent 65%);
+            mix-blend-mode: soft-light;
+        }
+
+        @keyframes breath {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+
+        /* Flowers – slow realistic rise */
+        #particles {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 1.55rem;
+            opacity: 0;
+            animation: rise linear forwards;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+        }
+
+        @keyframes rise {
+            0%   { transform: translateY(105vh) rotate(0deg) scale(0.7); opacity: 0; }
+            12%  { opacity: 0.9; }
+            88%  { opacity: 0.75; }
+            100% { transform: translateY(-15vh) rotate(-280deg) scale(1.05) translateX(var(--d)); opacity: 0; }
+        }
+
+        /* Layout */
+        .ui {
+            position: relative;
+            z-index: 30;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 44px 20px 28px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.7rem, 9vw, 3.5rem);
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 5px;
+            color: var(--gold);
+            text-shadow: 0 4px 35px rgba(232,213,181,0.25);
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 0.7rem;
+            letter-spacing: 3.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .meta {
+            margin-top: 14px;
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        /* Bottom area */
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+        }
+
+        .offer {
+            background: rgba(15,13,11,0.6);
+            border: 1px solid rgba(232,213,181,0.2);
+            color: var(--gold);
+            font-size: 0.75rem;
+            letter-spacing: 2.5px;
+            padding: 12px 26px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+            transition: 0.2s;
+        }
+
+        .offer:active {
+            transform: scale(0.96);
+            background: rgba(232,213,181,0.12);
+        }
+
+        /* ===== Realistic Player Card ===== */
+        .player {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(12,11,10,0.72);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+            padding: 20px 18px 18px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.75);
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.9s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        .player.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .player-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 0.62rem;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #c45c26;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .track-info {
+            margin-bottom: 16px;
+        }
+
+        .track-title {
+            font-size: 0.95rem;
+            color: var(--gold);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track-artist {
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        /* Progress */
+        .progress-wrap {
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            border-radius: 3px;
+            transition: width 0.3s linear;
+        }
+
+        .times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.62rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            margin-top: 18px;
+        }
+
+        .ctrl {
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.35rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .ctrl:active {
+            transform: scale(0.9);
+            background: rgba(232,213,181,0.1);
+        }
+
+        .ctrl.play {
+            font-size: 1.55rem;
+            background: rgba(232,213,181,0.08);
+        }
+
+        .ctrl.shuffle.active {
+            color: #e8c89a;
+            text-shadow: 0 0 10px rgba(232,200,154,0.4);
+        }
+
+        /* Hidden YT */
+        #yt {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -10;
+        }
+
+        /* Entry */
+        #entry {
+            position: fixed;
+            inset: 0;
+            background: var(--dark);
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s;
+        }
+
+        .enter-text {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 28px;
+            text-transform: uppercase;
+        }
+
+        .enter-btn {
+            background: transparent;
+            border: 1px solid rgba(232,213,181,0.3);
+            color: var(--gold);
+            padding: 13px 40px;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            animation: borderPulse 3s infinite;
+        }
+
+        .enter-btn:active {
+            background: rgba(232,213,181,0.1);
+            transform: scale(0.98);
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(232,213,181,0.2); }
+            50% { border-color: rgba(232,213,181,0.8); }
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <div id="entry">
+        <div class="enter-text">Lalbaugcha Raja<br>Virtual Pandal</div>
+        <button class="enter-btn" onclick="enter()">Enter</button>
+    </div>
+
+    <div class="bg" id="bg"></div>
+    <div class="texture"></div>
+    <div class="wash"></div>
+    <div id="particles"></div>
+    <div id="yt"></div>
+
+    <div class="ui">
+        <div class="header">
+            <h1>Bappa</h1>
+            <p>Virtual Pandal • Lalbaugcha Raja</p>
+            <div class="meta" id="clock"></div>
+        </div>
+
+        <div class="bottom">
+            <button class="offer" onclick="offer()">Offer Puja Flowers</button>
+
+            <div class="player" id="player">
+                <div class="player-top">
+                    <span><span class="live-dot"></span>Live</span>
+                    <span id="listeners">1 listening</span>
+                </div>
+
+                <div class="track-info">
+                    <div class="track-title" id="title">Sacred Aarti &amp; Bhajans</div>
+                    <div class="track-artist">Lalbaugcha Raja</div>
+                </div>
+
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="times">
+                        <span id="current">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="ctrl" onclick="prev()">⏮</button>
+                    <button class="ctrl play" id="playBtn" onclick="toggle()">▶</button>
+                    <button class="ctrl" onclick="next()">⏭</button>
+                    <button class="ctrl shuffle" id="shuffleBtn" onclick="shuffle()">🔀</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let player, isPlaying = false, isShuffled = false;
+        const playlistId = 'PLc2iLHmAuYOk';
+        let progressInterval;
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-IN', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt', {
+                height: '1',
+                width: '1',
+                playerVars: {
+                    listType: 'playlist',
+                    list: playlistId,
+                    autoplay: 0,
+                    controls: 0,
+                    modestbranding: 1,
+                    rel: 0,
+                    playsinline: 1,
+                    loop: 1
+                },
+                events: {
+                    'onStateChange': onStateChange
+                }
+            });
+        }
+
+        function onStateChange(e) {
+            if (e.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('playBtn').textContent = '⏸';
+                startProgress();
+            } else {
+                isPlaying = false;
+                document.getElementById('playBtn').textContent = '▶';
+                clearInterval(progressInterval);
+            }
+        }
+
+        function startProgress() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (!player || !player.getCurrentTime) return;
+                const cur = player.getCurrentTime() || 0;
+                const dur = player.getDuration() || 0;
+                const pct = dur ? (cur / dur) * 100 : 0;
+                document.getElementById('progressFill').style.width = pct + '%';
+                document.getElementById('current').textContent = format(cur);
+                document.getElementById('duration').textContent = format(dur);
+            }, 400);
+        }
+
+        function format(s) {
+            s = Math.floor(s);
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        function enter() {
+            document.getElementById('entry').classList.add('hidden');
+            const bg = document.getElementById('bg');
+            bg.style.opacity = '0.75';
+            bg.style.filter = 'contrast(1.18) saturate(0.9) sepia(0.15) brightness(0.93)';
+
+            setTimeout(() => document.getElementById('player').classList.add('show'), 700);
+            setTimeout(() => {
+                if (player && player.playVideo) player.playVideo();
+            }, 1100);
+
+            // soft initial offerings
+            setTimeout(() => {
+                for (let i = 0; i < 4; i++) setTimeout(offer, i * 1100);
+            }, 2200);
+        }
+
+        function toggle() {
+            if (!player) return;
+            isPlaying ? player.pauseVideo() : player.playVideo();
+        }
+
+        function next() { if (player) player.nextVideo(); }
+        function prev() { if (player) player.previousVideo(); }
+
+        function shuffle() {
+            isShuffled = !isShuffled;
+            document.getElementById('shuffleBtn').classList.toggle('active', isShuffled);
+            if (isShuffled && player) {
+                player.playVideoAt(Math.floor(Math.random() * 20));
+            }
+        }
+
+        // Realistic slow rising flowers
+        function offer() {
+            const box = document.getElementById('particles');
+            const flowers = ['🌺', '🌼', '🪷', '💮'];
+            for (let i = 0; i < 9; i++) {
+                const el = document.createElement('div');
+                el.className = 'flower';
+                el.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                el.style.left = (Math.random() * 84 + 8) + 'vw';
+                el.style.animationDuration = (4.8 + Math.random() * 3.5) + 's';
+                el.style.setProperty('--d', (Math.random() * 60 - 30) + 'px');
+                box.appendChild(el);
+                setTimeout(() => el.remove(), 9000);
+            }
+        }
+    </script>
+</body>
+          </html>
