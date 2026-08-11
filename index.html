@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Virtual Pandal | Est. 2024</title>
+    <style>
+        /* Import Elegant Serif and Modern Monospace fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* 1. Vintage Film Grain Overlay (The secret to the saloon.wtf vibe) */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.06;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        /* 2. Cinematic Background */
+        .bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://image.pollinations.ai/prompt/beautiful%20detailed%20pencil%20sketch%20of%20Lord%20Ganesha%20in%20a%20pandal%20traditional%20art?width=1080&height=1920&nologo=true') no-repeat center center/cover;
+            filter: brightness(0.2) sepia(0.5) contrast(1.1); 
+            z-index: 1;
+            transition: filter 3s cubic-bezier(0.25, 1, 0.5, 1); /* Ultra smooth fade */
+            animation: slowZoom 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* Falling Flowers (Subtle) */
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: #FFA500;
+            border-radius: 50%;
+            opacity: 0;
+            animation: fall linear infinite;
+            filter: blur(1px); /* Adds depth of field */
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.6); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1); opacity: 0; }
+        }
+
+        /* 3. Main App UI Layout */
+        .ui-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding: 60px 20px 40px 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Elegant Divine Typography */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: #E5C158; /* Muted Gold */
+            letter-spacing: 2px;
+            text-shadow: 0 4px 30px rgba(229, 193, 88, 0.4);
+            animation: breathe 4s infinite alternate ease-in-out;
+        }
+
+        .header p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        @keyframes breathe {
+            0% { opacity: 0.8; text-shadow: 0 4px 20px rgba(229, 193, 88, 0.2); }
+            100% { opacity: 1; text-shadow: 0 4px 40px rgba(229, 193, 88, 0.6); }
+        }
+
+        /* 4. Ultra-Sleek Bottom Player (saloon.wtf style) */
+        .player-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .player-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .track-info {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .now-playing-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #E5C158;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .playlist-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        /* Minimalist Visualizer */
+        .visualizer {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 24px;
+        }
+
+        .bar {
+            width: 3px;
+            background: #E5C158;
+            border-radius: 2px;
+            animation: bounce 1s infinite ease-in-out alternate;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+        .bar:nth-child(2) { animation-delay: 0.3s; height: 24px; }
+        .bar:nth-child(3) { animation-delay: 0.0s; height: 16px; }
+        .bar:nth-child(4) { animation-delay: 0.4s; height: 20px; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); opacity: 0.5; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .hidden-player {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 5. Minimalist Cinematic Entry Screen */
+        #entry-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+        }
+
+        .enter-text {
+            font-family: 'Space Mono', monospace;
+            color: #888;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .enter-btn {
+            background: transparent;
+            color: #E5C158;
+            border: 1px solid rgba(229, 193, 88, 0.3);
+            padding: 12px 40px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse-border 3s infinite;
+        }
+
+        .enter-btn:active {
+            background: rgba(229, 193, 88, 0.1);
+            transform: scale(0.98);
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(229, 193, 88, 0.2); text-shadow: 0 0 0 transparent; }
+            50% { border-color: rgba(229, 193, 88, 0.8); text-shadow: 0 0 10px rgba(229, 193, 88, 0.5); }
+            100% { border-color: rgba(229, 193, 88, 0.2); text-shadow: 0 0 0 transparent; }
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Film Grain Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Minimalist Entry Screen -->
+    <div id="entry-screen">
+        <div class="enter-text">Experience the Pandal</div>
+        <button class="enter-btn" onclick="enterPandal()">Enter</button>
+    </div>
+
+    <!-- Background & Particles -->
+    <div class="bg-container" id="bg"></div>
+    <div id="particles"></div>
+
+    <!-- Main UI -->
+    <div class="ui-container">
+        
+        <div class="header">
+            <h1>Morya</h1>
+            <p>Virtual Pandal • 2024</p>
+        </div>
+
+        <div class="player-wrapper">
+            <div class="player-card">
+                <div class="track-info">
+                    <p class="now-playing-label">Live Broadcast</p>
+                    <p class="playlist-title">Ganesh Chaturthi Mix</p>
+                </div>
+                
+                <div class="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Audio Engine -->
+        <div class="hidden-player">
+            <iframe id="yt-player" allow="autoplay; encrypted-media"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        function generateFlowers() {
+            const container = document.getElementById('particles');
+            const particleCount = window.innerWidth < 600 ? 20 : 40; 
+            
+            for(let i = 0; i < particleCount; i++) {
+                let div = document.createElement('div');
+                div.className = 'particle';
+                div.style.left = (Math.random() * 100) + 'vw';
+                
+                // Varied sizes for depth
+                let size = (Math.random() * 6 + 4);
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                
+                div.style.animationDuration = (Math.random() * 6 + 5) + 's';
+                div.style.animationDelay = (Math.random() * 5) + 's';
+                
+                // Muted marigold colors to match the vintage vibe
+                div.style.backgroundColor = Math.random() > 0.5 ? 'rgba(255, 165, 0, 0.6)' : 'rgba(229, 193, 88, 0.6)';
+                container.appendChild(div);
+            }
+        }
+
+        function enterPandal() {
+            // Fade out entry screen
+            const entryScreen = document.getElementById('entry-screen');
+            entryScreen.classList.add('hidden');
+
+            // Cinematic fade-in for the background
+            const bg = document.getElementById('bg');
+            bg.style.filter = 'brightness(0.4) sepia(0.3) contrast(1.1)';
+
+            // Trigger YouTube Audio
+            const playlistId = 'PLc2iLHmAuYOk'; 
+            const iframe = document.getElementById('yt-player');
+            iframe.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&loop=1&rel=0`;
+        }
+
+        window.onload = generateFlowers;
+    </script>
+</body>
+</html>
