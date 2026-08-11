@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Virtual Pandal | Lalbaugcha Raja • Morya</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            color: #d8c3a5;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Heavy film grain – salon.wtf DNA */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.14;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        /* Watercolour-style Lalbaugcha Raja pandal atmosphere */
+        .bg-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.25;
+            transition: opacity 2.2s ease, filter 2.5s ease;
+            background:
+                /* soft central glow (idol light) */
+                radial-gradient(ellipse 80% 70% at 50% 42%,
+                    rgba(180, 90, 30, 0.55) 0%,
+                    rgba(120, 45, 15, 0.25) 35%,
+                    transparent 70%),
+                /* upper wash – warm saffron bleed */
+                radial-gradient(ellipse 120% 80% at 50% -10%,
+                    rgba(210, 140, 50, 0.18) 0%,
+                    transparent 55%),
+                /* lower warm ground */
+                radial-gradient(ellipse 100% 60% at 50% 110%,
+                    rgba(90, 35, 10, 0.4) 0%,
