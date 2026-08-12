@@ -163,12 +163,12 @@
  .player {
  width: 100%;
  max-width: 320px;
- background: rgba(0, 0, 0, 0.15); /* Made highly transparent */
- backdrop-filter: blur(2px); /* Reduced blur so you can see through it */
- border: 1px solid rgba(255,255,255,0.08); /* Faint border */
+ background: rgba(0, 0, 0, 0.15); 
+ backdrop-filter: blur(2px); 
+ border: 1px solid rgba(255,255,255,0.08); 
  border-radius: 14px;
  padding: 11px 12px 10px;
- box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Softer shadow */
+ box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
  opacity: 0;
  transform: translateY(16px);
  transition: all 0.7s cubic-bezier(0.16,1,0.3,1);
@@ -412,7 +412,8 @@
  <div class="player" id="player">
  <div class="player-top">
  <span><span class="live-dot"></span>Live</span>
- <span>1 listening</span>
+ <!-- Dynamic listener count ID added here -->
+ <span id="listenerCount">51 listening</span>
  </div>
 
  <div class="track-info">
@@ -441,9 +442,11 @@
 
  <script>
  let player, isPlaying = false;
- // Note: Ensure this playlistId is valid if the music doesn't load.
  const playlistId = 'PLc2iLHmAuYOk';
  let progressInterval;
+ 
+ // Variables for dynamic listener count
+ let currentListeners = 51;
 
  function updateClock() {
  const now = new Date();
@@ -507,6 +510,19 @@
  return m + ':' + (sec < 10 ? '0' : '') + sec;
  }
 
+ // Simulates new people joining the live stream
+ function simulateListeners() {
+ setTimeout(() => {
+ // Adds 1 or 2 people randomly
+ const newJoiners = Math.floor(Math.random() * 2) + 1;
+ currentListeners += newJoiners;
+ document.getElementById('listenerCount').textContent = currentListeners + ' listening';
+ 
+ // Loop the function at random intervals (between 3 to 7 seconds)
+ simulateListeners();
+ }, Math.floor(Math.random() * 4000) + 3000);
+ }
+
  function enter() {
  document.getElementById('entry').classList.add('hidden');
  const bg = document.getElementById('bg');
@@ -522,6 +538,9 @@
  setTimeout(() => {
  for (let i = 0; i < 5; i++) setTimeout(offer, i * 850);
  }, 1600);
+ 
+ // Start the simulated listener count when they enter the pandal
+ simulateListeners();
  }
 
  function toggle() {
